@@ -1,95 +1,88 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-<script>
-  var p = prompt("ADMIN PASSWORD REQUIRED:");
-  if(p !== "saringaan@143"){
-    alert("Wrong Password! Access Denied");
-    window.location.href = "index.html";
-  }
-</script>
-  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Admin - SECURE INDIA</title>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SECURE INDIA - Real-Time Safety Tracking</title>
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#0a192f">
 <style>
-body{font-family:Arial;background:#f0f0f0;margin:0;padding:10px}
-.top{background:#fff;padding:10px;border-radius:10px;margin-bottom:10px;display:flex;justify-content:space-between}
-.card{background:#fff;padding:10px;border-radius:10px;margin-bottom:8px;border-left:4px solid orange}
-#map{height:350px;width:100%;border-radius:10px;margin-bottom:10px}
-button{padding:6px 12px;background:green;color:#fff;border:none;border-radius:5px;cursor:pointer}
-.btn-red{background:red}
+*{margin:0;padding:0;box-sizing:border-box;font-family: 'Segoe UI', sans-serif;}
+body{background:#0a192f;color:white;}
+nav{display:flex;justify-content:space-between;padding:20px 40px;background:#081428;}
+.logo{font-size:24px;font-weight:bold;color:#ff8c00;}
+.logo span{color:white;}
+.hero{text-align:center;padding:80px 20px;}
+.hero h1{font-size:48px;color:#ff8c00;}
+.hero p{font-size:18px;margin:20px 0;color:#b0c4de;}
+.btn{background:#ff8c00;color:white;padding:14px 28px;border-radius:30px;text-decoration:none;font-weight:bold;display:inline-block;margin:10px;}
+.btn-outline{border:2px solid #ff8c00;background:transparent;}
+.features{display:flex;gap:20px;justify-content:center;padding:40px;flex-wrap:wrap;}
+.card{background:#112240;padding:25px;border-radius:15px;width:300px;border:1px solid #ff8c0044;}
+.card h3{color:#ff8c00;margin-bottom:10px;}
+footer{text-align:center;padding:20px;color:#8892b0;margin-top:30px;}
+#installBtn{position:fixed;bottom:20px;right:20px;background:#ff8c00;color:white;padding:14px 22px;border:none;border-radius:30px;z-index:9999;font-weight:bold;display:none;cursor:pointer;box-shadow:0 5px 15px #0005;}
 </style>
 </head>
 <body>
 
-<div class="top">
-<div>
-<b>SECURE INDIA - ADMIN</b><br>
-Total: <span id="total">0</span> | Fixed: <span id="fixed">0</span> | Pending: <span id="pending">0</span> | Users: <span id="users">0</span>
-</div>
-<div><button class="btn-red" onclick="logout()">Logout</button></div>
+<nav>
+<div class="logo">SECURE <span>INDIA</span></div>
+<a href="admin.html" class="btn" style="padding:8px 18px;">Admin Login</a>
+</nav>
+
+<div class="hero">
+<h1>SECURE INDIA</h1>
+<p>Real-Time Safety Tracking System - Desh Surakshit, Hum Surakshit</p>
+<p>Live Location | Panic Alert | 24/7 Monitoring</p>
+<br>
+<a href="admin.html" class="btn">Open Admin Dashboard</a>
+<a href="#" id="shareBtn" class="btn btn-outline">Share App</a>
 </div>
 
-<div id="map"></div>
-<div id="list">Loading data...</div>
+<div class="features">
+<div class="card"><h3>📍 Live Location</h3><p>Real-time monitoring & tracking of users and assets across India.</p></div>
+<div class="card"><h3>🚨 Panic Alert</h3><p>Instant emergency alert with one-tap response to authorities.</p></div>
+<div class="card"><h3>📊 Admin Dashboard</h3><p>Centralized control, analytics & incident management.</p></div>
+</div>
+
+<footer>
+<p>Secure • Reliable • 24/7 Monitoring<br>secure-india.vercel.app | Made for India</p>
+</footer>
+
+<button id="installBtn">📲 Install App</button>
 
 <script>
-const supa = window.supabase.createClient("https://enpcocqbdbkxlhbfcaxb.supabase.co","sb_publishable_8sDL_P60NTrjbCTzJHLbvQ_q5cltzsY");
-
-// Map init
-let map = L.map('map').setView([26.4499, 80.3319], 11);
-L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
-
-async function loadData(){
-let {data, error} = await supa.from("reports").select("*").order("created_at",{ascending:false});
-if(error){document.getElementById("list").innerText=error.message;return;}
-
-document.getElementById("total").innerText=data.length;
-document.getElementById("fixed").innerText=data.filter(r=>r.status=='fixed').length;
-document.getElementById("pending").innerText=data.filter(r=>r.status!='fixed').length;
-document.getElementById("users").innerText=[...new Set(data.map(r=>r.reporter_email))].length;
-
-let html="";
-data.forEach(r=>{
-// add to map
-if(r.latitude && r.latitude.includes(",")){
-let parts=r.latitude.split(",").map(Number);
-if(!isNaN(parts[0])){
-let color = r.status=='fixed'? 'green' : 'red';
-L.circleMarker([parts[0],parts[1]],{color:color,radius:8}).addTo(map).bindPopup(`${r.category}<br>${r.city}<br>${r.description}`);
+// PWA Install Logic
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('data:text/javascript;base64,'+btoa('self.addEventListener("fetch", e=>{})'));
 }
-}
-
-html+=`<div class="card">
-<b>${r.category.toUpperCase()}</b> - ${r.city} (${r.pincode})<br>
-Email: ${r.reporter_email}<br>
-Location: ${r.latitude}<br>
-Details: ${r.description}<br>
-Status: <b>${r.status}</b><br><br>
-${r.status!='fixed'? `<button onclick="makeFixed(${r.id})">Mark as Fixed</button>` : `<span style="color:green">Fixed Done</span>`}
-<button class="btn-red" onclick="deleteReport(${r.id})" style="margin-left:10px">Delete</button>
-</div>`;
+let deferredPrompt;
+const installBtn = document.getElementById('installBtn');
+window.addEventListener('beforeinstallprompt', (e) => {
+  e.preventDefault();
+  deferredPrompt = e;
+  installBtn.style.display = 'block';
 });
-document.getElementById("list").innerHTML=html||"No data found";
-}
+installBtn.addEventListener('click', () => {
+  if(deferredPrompt){
+    deferredPrompt.prompt();
+    deferredPrompt.userChoice.then(() => {
+      deferredPrompt = null;
+      installBtn.style.display = 'none';
+    });
+  }
+});
 
-async function makeFixed(id){
-await supa.from("reports").update({status:'fixed'}).eq("id",id);
-loadData();
-}
-async function deleteReport(id){
-if(confirm("Delete this report?")){
-await supa.from("reports").delete().eq("id",id);
-loadData();
-}
-}
-function logout(){
-  localStorage.removeItem("adminPass");
-  location.href="index.html";
-}
-loadData();
+// Share Logic
+document.getElementById('shareBtn').addEventListener('click', ()=>{
+  if(navigator.share){
+    navigator.share({title:'SECURE INDIA', text:'Check my SECURE INDIA App', url: window.location.href});
+  } else {
+    alert('Link Copied: ' + window.location.href);
+  }
+});
 </script>
+
 </body>
 </html>
