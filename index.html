@@ -16,6 +16,11 @@
 <meta property="og:url" content="https://secure-india.vercel.app/">
 <meta property="og:type" content="website">
 
+<!-- PWA INSTALL KE LIYE JODA HAI -->
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#ff6600">
+<link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/3135/3135715.png">
+
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
@@ -65,6 +70,14 @@ button{background:#ff6600;color:#fff;font-weight:bold;border:none;padding:12px;c
 <hr><div id="map2"></div><h3>All Reports</h3><div id="list">Loading...</div>
 <button style="background:red;margin-top:15px" onclick="logoutAdmin()">Logout Admin</button>
 </div>
+
+<!-- PWA INSTALL KE LIYE JODA HAI -->
+<script>
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('sw.js');
+  }
+</script>
+
 <script>
 const supa = window.supabase.createClient("https://enpcocqbdbkxlhbfcaxb.supabase.co","sb_publishable_8sDL_P60NTrjbCTzJHLbvQ_q5cltzsY");
 let myLat=26.4499, myLon=80.3319; let potholes=[]; let alertON = localStorage.getItem("alertON")!=="off";
@@ -91,4 +104,4 @@ async function delIt(id){if(confirm("Delete?")){await supa.from("reports").delet
 showSize(); showSize2();
 </script>
 </body>
-</html>
+  </html>
