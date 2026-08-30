@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin - SECURE INDIA</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<style>
+body{font-family:Arial;background:#f0f0f0;margin:0;padding:10px}
+.top{background:#fff;padding:10px;border-radius:10px;margin-bottom:10px;display:flex;justify-content:space-between}
+.card{background:#fff;padding:10px;border-radius:10px;margin-bottom:8px;border-left:4px solid orange}
+#map{height:350px;width:100%;border-radius:10px;margin-bottom:10px}
+button{padding:6px 12px;background:green;color:#fff;border:none;border-radius:5px;cursor:pointer}
+.btn-red{background:red}
+</style>
+</head>
+<body>
+
+<div class="top">
+<div>
+<b>SECURE INDIA - ADMIN</b><br>
+Total: <span id="total">0</span> | Fixed: <span id="fixed">0</span> | Pending: <span id="pending">0</span> | Users: <span id="users">0</span>
+</div>
+<div><button class="btn-red" onclick="logout()">Logout</button></div>
+</div>
+
+<div id="map"></div>
+<div id="list">Loading data...</div>
+
+<script>
+const supa = window.supabase.createClient("https://enpcocqbdbkxlhbfcaxb.supabase.co","sb_publishable_8sDL_P60NTrjbCTzJHLbvQ_q5cltzsY");
+
+// Map init
+let map = L.map('map').setView([26.4499, 80.3319], 11);
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
+
+async function loadData(){
+let {data, error} = await supa.from("reports").select("*").order("created_at",{ascending:false});
+if(error){document.getElementById("list").innerText=error.message;return;}
+
+document.getElementById("total").innerText=data.length;
+document.getElementById("fixed").innerText=data.filter(r=>r.status=='fixed').length;
+document.getElementById("pending").innerText=data.filter(r=>r.status!='fixed').length;
+document.getElementById("users").innerText=[...new Set(data.map(r=>r.reporter_email))].length;
+
+let html="";
+data.forEach(r=>{
+// add to map
+if(r.latitude && r.latitude.includes(",")){
+let parts=r.latitude.split(",").map(Number);
+if(!isNaN(parts[0])){
+let color = r.status=='fixed'? 'green' : 'red';
+L.circleMarker([parts[0],parts[1]],{color:color,radius:8}).addTo(map).bindPopup(`${r.category}<br>${r.city}<br>${r.description}`);
+}
+}
+
+html+=`<div class="card">
+<b>${r.category.toUpperCase()}</b> - ${r.city} (${r.pincode})<br>
+Email: ${r.reporter_email}<br>
+Location: ${r.latitude}<br>
+Details: ${r.description}<br>
+Status: <b>${r.status}</b><br><br>
+${r.status!='fixed'? `<button onclick="makeFixed(${r.id})">Mark as Fixed</button>` : `<span style="color:green">Fixed Done</span>`}
+<button class="btn-red" onclick="deleteReport(${r.id})" style="margin-left:10px">Delete</button>
+</div>`;
+});
+document.getElementById("list").innerHTML=html||"No data found";
+}
+
+async function makeFixed(id){
+await supa.from("reports").update({status:'fixed'}).eq("id",id);
+loadData();
+}
+async function deleteReport(id){
+if(confirm("Delete this report?")){
+await supa.from("reports").delete().eq("id",id);
+loadData();
+}
+}
+function logout(){
+location.href="index.html";
+}
+loadData();
+</script>
+</body>
+</html>
