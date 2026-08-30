@@ -1,9 +1,16 @@
 {
   "name": "SECURE INDIA",
   "short_name": "SECURE INDIA",
-  "start_url": "/index.html",
+  "start_url": "/",
   "display": "standalone",
-  "background_color": "#0a192f",
-  "theme_color": "#ff8c00",
-  "icons": [{ "src": "https://cdn-icons-png.flaticon.com/512/1067/1067-512.png", "sizes": "512x512", "type": "image/png" }]
+  "background_color": "#ff6600",
+  "theme_color": "#ff6600",
+  "icons": [
+    {
+      "src": "https://cdn-icons-png.flaticon.com/512/3135/3135715.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
 }
