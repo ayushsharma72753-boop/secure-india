@@ -1,7 +1,14 @@
 <!DOCTYPE html>
 <html>
 <head>
-<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<script>
+  var p = prompt("ADMIN PASSWORD REQUIRED:");
+  if(p !== "saringaan@143"){
+    alert("Wrong Password! Access Denied");
+    window.location.href = "index.html";
+  }
+</script>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Admin - SECURE INDIA</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
