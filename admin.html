@@ -91,7 +91,9 @@ loadData();
 }
 }
 function logout(){
-location.href="index.html";
+function logout(){
+  localStorage.removeItem("adminPass");
+  location.href="index.html";
 }
 loadData();
 </script>
