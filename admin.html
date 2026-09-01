@@ -3,85 +3,113 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SECURE INDIA - Real-Time Safety Tracking</title>
-<link rel="manifest" href="manifest.json">
-<meta name="theme-color" content="#0a192f">
+<title>SECURE INDIA - Admin Panel</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
-*{margin:0;padding:0;box-sizing:border-box;font-family: 'Segoe UI', sans-serif;}
-body{background:#0a192f;color:white;}
-nav{display:flex;justify-content:space-between;padding:20px 40px;background:#081428;}
-.logo{font-size:24px;font-weight:bold;color:#ff8c00;}
-.logo span{color:white;}
-.hero{text-align:center;padding:80px 20px;}
-.hero h1{font-size:48px;color:#ff8c00;}
-.hero p{font-size:18px;margin:20px 0;color:#b0c4de;}
-.btn{background:#ff8c00;color:white;padding:14px 28px;border-radius:30px;text-decoration:none;font-weight:bold;display:inline-block;margin:10px;}
-.btn-outline{border:2px solid #ff8c00;background:transparent;}
-.features{display:flex;gap:20px;justify-content:center;padding:40px;flex-wrap:wrap;}
-.card{background:#112240;padding:25px;border-radius:15px;width:300px;border:1px solid #ff8c0044;}
-.card h3{color:#ff8c00;margin-bottom:10px;}
-footer{text-align:center;padding:20px;color:#8892b0;margin-top:30px;}
-#installBtn{position:fixed;bottom:20px;right:20px;background:#ff8c00;color:white;padding:14px 22px;border:none;border-radius:30px;z-index:9999;font-weight:bold;display:none;cursor:pointer;box-shadow:0 5px 15px #0005;}
+body { font-family: Arial; background: #f4f6f9; padding: 20px; margin:0; }
+h1 { color: #222; }
+.cards { display: flex; flex-wrap: wrap; gap: 10px; }
+.card { background: white; padding: 20px; border-radius: 15px; width: 200px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+.card p { margin:0; color: #666; }
+.card h2 { margin: 5px 0; font-size: 36px; }
+.total { border-left: 5px solid #007bff; }
+.report { border-left: 5px solid #ff9800; }
+.fixed { border-left: 5px solid #4caf50; }
+.pending { border-left: 5px solid #f44336; }
+.box { background: white; padding: 15px; border-radius: 10px; margin-top: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
+input { padding: 12px; width: 60%; max-width: 300px; border-radius: 8px; border: 1px solid #ccc; }
+.btn-add { background: #007bff; color: white; padding: 12px 20px; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; }
+table { width: 100%; background: white; border-radius: 10px; margin-top: 15px; border-collapse: collapse; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
+th { background: #222; color: white; }
+th, td { padding: 12px; border-bottom: 1px solid #eee; text-align: left; }
+.btn-fix { background: #4caf50; color: white; padding: 6px 12px; border: none; border-radius: 5px; cursor: pointer; }
+.btn-pending { background: #ff9800; color: white; padding: 6px 12px; border: none; border-radius: 5px; cursor: pointer; margin-left: 5px;}
+.badge { padding: 3px 8px; border-radius: 10px; font-size: 12px; color: white; }
+.badge-admin { background: #007bff; }
+.badge-user { background: #666; }
 </style>
 </head>
 <body>
 
-<nav>
-<div class="logo">SECURE <span>INDIA</span></div>
-<a href="admin.html" class="btn" style="padding:8px 18px;">Admin Login</a>
-</nav>
+<h1>SECURE INDIA - Admin Panel</h1>
 
-<div class="hero">
-<h1>SECURE INDIA</h1>
-<p>Real-Time Safety Tracking System - Desh Surakshit, Hum Surakshit</p>
-<p>Live Location | Panic Alert | 24/7 Monitoring</p>
-<br>
-<a href="admin.html" class="btn">Open Admin Dashboard</a>
-<a href="#" id="shareBtn" class="btn btn-outline">Share App</a>
+<div class="cards">
+  <div class="card total"><p>Total Users</p><h2 id="totalUsers">0</h2></div>
+  <div class="card report"><p>Total Reports</p><h2 id="totalReports">0</h2></div>
+  <div class="card fixed"><p>Fixed</p><h2 id="fixed">0</h2></div>
+  <div class="card pending"><p>Pending</p><h2 id="pending">0</h2></div>
 </div>
 
-<div class="features">
-<div class="card"><h3>📍 Live Location</h3><p>Real-time monitoring & tracking of users and assets across India.</p></div>
-<div class="card"><h3>🚨 Panic Alert</h3><p>Instant emergency alert with one-tap response to authorities.</p></div>
-<div class="card"><h3>📊 Admin Dashboard</h3><p>Centralized control, analytics & incident management.</p></div>
+<div class="box">
+  <h3>Admin - Apni Report Karo</h3>
+  <input id="newTitle" placeholder="Ex: Road damage near Kishanganj station" />
+  <button class="btn-add" onclick="addAdminReport()">+ Report Add</button>
+  <p style="font-size:12px; color:#888;">Ye report 'admin' ke naam se jayegi. User apni report apne app se karega.</p>
 </div>
 
-<footer>
-<p>Secure • Reliable • 24/7 Monitoring<br>secure-india.vercel.app | Made for India</p>
-</footer>
-
-<button id="installBtn">📲 Install App</button>
+<div class="box">
+  <h3>Saari Reports (User + Admin) - Admin sabko Fix kar sakta hai</h3>
+  <table id="reportTable">
+    <tr><th>Title</th><th>Reported By</th><th>Status</th><th>Action</th></tr>
+  </table>
+</div>
 
 <script>
-// PWA Install Logic
-if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.register('data:text/javascript;base64,'+btoa('self.addEventListener("fetch", e=>{})'));
-}
-let deferredPrompt;
-const installBtn = document.getElementById('installBtn');
-window.addEventListener('beforeinstallprompt', (e) => {
-  e.preventDefault();
-  deferredPrompt = e;
-  installBtn.style.display = 'block';
-});
-installBtn.addEventListener('click', () => {
-  if(deferredPrompt){
-    deferredPrompt.prompt();
-    deferredPrompt.userChoice.then(() => {
-      deferredPrompt = null;
-      installBtn.style.display = 'none';
-    });
-  }
-});
+const SUPABASE_URL = "https://enpcocqbdbkxlhbfcaxb.supabase.co"
+const SUPABASE_KEY = "sb_publishable_8sDL_P60NTrjbCTzJHLbvQ_q5cltzsY"
+const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY)
 
-// Share Logic
-document.getElementById('shareBtn').addEventListener('click', ()=>{
-  if(navigator.share){
-    navigator.share({title:'SECURE INDIA', text:'Check my SECURE INDIA App', url: window.location.href});
-  } else {
-    alert('Link Copied: ' + window.location.href);
+async function loadDashboard() {
+  const { count: usersCount } = await supabaseClient.from('users').select('*', { count: 'exact', head: true })
+  document.getElementById("totalUsers").innerText = usersCount || 0
+
+  const { count: reportsCount } = await supabaseClient.from('reports').select('*', { count: 'exact', head: true })
+  document.getElementById("totalReports").innerText = reportsCount || 0
+
+  const { count: fixedCount } = await supabaseClient.from('reports').select('*', { count: 'exact', head: true }).eq('status', 'fixed')
+  document.getElementById("fixed").innerText = fixedCount || 0
+
+  const { count: pendingCount } = await supabaseClient.from('reports').select('*', { count: 'exact', head: true }).eq('status', 'pending')
+  document.getElementById("pending").innerText = pendingCount || 0
+
+  const { data: reports, error } = await supabaseClient.from('reports').select('*').order('created_at', {ascending:false})
+  if(error){ console.log(error); return; }
+
+  let table = document.getElementById("reportTable")
+  table.innerHTML = "<tr><th>Title</th><th>Reported By</th><th>Status</th><th>Action</th></tr>"
+  
+  reports.forEach(r => {
+    let badge = r.reported_by === 'admin' ? '<span class="badge badge-admin">ADMIN</span>' : '<span class="badge badge-user">USER</span>'
+    table.innerHTML += `<tr>
+      <td>${r.title}</td>
+      <td>${badge} ${r.reported_by}</td>
+      <td><b>${r.status.toUpperCase()}</b></td>
+      <td>
+        <button class="btn-fix" onclick="updateStatus('${r.id}','fixed')">Fixed Karo</button>
+        <button class="btn-pending" onclick="updateStatus('${r.id}','pending')">Pending Karo</button>
+      </td>
+    </tr>`
+  })
+}
+
+async function addAdminReport(){
+  let title = document.getElementById("newTitle").value.trim()
+  if(!title) return alert("Pehle title likho!")
+  const { error } = await supabaseClient.from('reports').insert([{ title: title, status: 'pending', reported_by: 'admin' }])
+  if(error){ alert(error.message) } else {
+    document.getElementById("newTitle").value = ""
+    loadDashboard()
   }
-});
+}
+
+async function updateStatus(id, status){
+  await supabaseClient.from('reports').update({ status: status }).eq('id', id)
+  loadDashboard()
+}
+
+loadDashboard()
+// Auto refresh har 3 sec
+setInterval(loadDashboard, 3000)
 </script>
 
 </body>
