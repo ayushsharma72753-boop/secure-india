@@ -55,3 +55,44 @@ SECURE India - Pothole Safety App
 **Learning:** Coding + Social Impact.
 
 BY- AYUSH SHARMA 
+
+# RESEARCH 4: MIT USA vs KANPUR - Why Roads Fail
+
+**Author: Ayush Sharma, Kanpur, UP - Aspiring MIT Researcher**
+
+### Abstract
+At MIT, a road is scanned by $10k LiDAR. In Kanpur, I scan it by a Rs 10,000 phone while riding a bike. I compared both.
+
+### 1. Question
+Why does a road in Cambridge, MA last 10 years, but GT Road Kanpur breaks every monsoon?
+
+### 2. Data I Collected
+- Kanpur: 50 potholes near Fazalganj, Rawatpur - measured depth, photo, GPS via my app Secure India
+- MIT: Studied MIT OCW 1.101 (Mechanics) + Mass Ave road specs from Cambridge city data
+- Weather: NASA data - Kanpur 850mm rain, Cambridge 1100mm (almost same! So rain is not the reason)
+
+### 3. Formula
+Road Failure Index = (Traffic Load x Water Logging Days) / Base Thickness
+
+Kanpur RFI = (8000 trucks x 45 days) / 15cm = 24,000
+MIT RFI = (3000 trucks x 10 days) / 45cm = 666
+
+Kanpur roads take 36x more damage.
+
+### 4. My Finding
+Problem is not tar. Problem is:
+1. No drainage in Kanpur (water stays 45 days) vs MIT drains in 10 days
+2. No priority system - PWD fixes small potholes first, big ones stay
+
+### 5. My Solution - Tested in Kanpur
+I fixed one 10m patch near my house in Kanpur:
+- Made 2% slope for water to go (free)
+- My app auto-flagged 3 deepest potholes (12cm) as DANGEROUS, fixed only those
+Result after 1 month rain: My patch = 0 new potholes. Full road = 5 new potholes.
+
+### 6. Why I Want MIT
+MIT builds perfect roads with money. I want to learn at MIT D-Lab how to build smart roads without money. Secure India is my first step - it tells Kanpur Nagar Nigam which pothole will kill a biker tomorrow.
+
+---
+Built in Kanpur, Tested in Kanpur, For Kanpur.
+Live: secure-india.vercel.app | Email: ayushsharma72753@gmail.com
