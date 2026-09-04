@@ -1,60 +1,41 @@
-# 🇮🇳 SECURE INDIA - Made for Safe Roads
+# SECURE INDIA 🇮🇳
+> A Real-Time Civic Issue Reporting System with 50-Meter Danger Alert
 
-> An initiative by a Visually Impaired (PWD) citizen to make Indian roads safe for everyone.
+Secure India is a GPS-powered platform where citizens can report potholes, garbage, electricity and water issues directly to the concerned government department with real photo & live location proof.
 
-**Live Link:** https://secure-india.vercel.app/
+Live Demo: **https://secure-india.vercel.app**
 
-### About The Project
+### 🚀 Key Features
+- **50-Meter Danger Alert:** Automatically vibrates & alerts driver if a reported pothole is within 50 meters (using Haversine formula)
+- **Real Email to Department:** Auto-sends real email from Gmail SMTP to state departments (PWD, Municipal, Electricity, Water)
+- **State-Wise Routing:** Bihar, UP, Delhi and other states mapped to their official NIC emails
+- **GPS + Reverse Geocoding:** Auto-detects city & state using OpenStreetMap Nominatim
+- **Proof Based:** Every report includes GPS coordinates, pincode, photo (camera/gallery), and reporter email (CC)
+- **Admin Dashboard:** Live map with all reports + Fixed/Delete controls
 
-SECURE INDIA is a citizen reporting platform where anyone can report civic problems like Potholes, Garbage, Electricity, and Water issues with live GPS location.
-
-This project is made by me, a Person with Disability (Visually Impaired). When I go outside, I cannot see potholes clearly, especially at night. Many times I have almost fallen. This is dangerous not only for people like me but also for elderly, children and every citizen. So I built this to solve a real-life problem.
-
-### Why This Project Is Special?
-
-1. Made by PWD for Everyone
-2. Smart Department Routing: Water -> Jal Vibhag, Electricity -> Vidyut Vibhag, Pothole/Garbage -> Nagar Nigam / PWD
-3. 50 Meter Pothole Alert for accident prevention
-4. Global Admin Lock for security
-5. Live Stats Dashboard (Total Users, Total Reports, Fixed, Pending)
-
-### Features
-
-- Live GPS tracking and auto-fill location
-- OpenStreetMap Integration for live pothole visualization
-- 50m Proximity Alert with ON/OFF toggle
-- Category wise reporting with Pothole Size
-- Admin Dashboard with Fix/Delete controls
-- City & Pincode wise data collection
-- SEO Optimized & Google Verified
-- Fully Responsive for mobile
-
-### Tech Stack
-
-- Frontend: HTML5, CSS3, JavaScript
-- Backend / Database: Supabase (PostgreSQL)
-- Map: Leaflet.js + OpenStreetMap
+### 🛠️ Tech Stack
+- Frontend: HTML, JS, Leaflet.js (OSM Maps)
+- Backend: Supabase (Postgres, Auth, Storage, Edge Functions)
+- Email: Gmail SMTP via Supabase Edge Function (Deno + smtp)
 - Hosting: Vercel
 
-### How To Run
+### 📧 How Real Email Works
+1. User submits report -> `reports` table insert
+2. Postgres Trigger `on_new_report_email` fires
+3. Calls Edge Function `cleversrnd-dept-email` via `pg_net`
+4. Edge Function sends email via Gmail App Password to `dept_email` + CC to reporter
 
-1. Clone the repo: git clone https://github.com/YOUR_USERNAME/secure-india.git
-2. Open index.html in browser
+No paid domain needed for email.
 
-### Future Scope
+### ⚙️ Setup
+1. Clone repo
+2. Create Supabase project, run `schema.sql`
+3. Create bucket `pothole-photos`
+4. Deploy Edge Function `cleversrnd-dept-email` with your Gmail & App Password
+5. Run SQL trigger from `/sql/trigger.sql`
 
-- Photo upload for proof
-- Direct Email to Nagar Nigam
-- AI based pothole detection
-- Voice Assistant for PWD users
+### 📄 License
+MIT License - Free for everyone. Built for Digital India.
 
-### Author
-
-Ayush - B.Tech Student | PWD (Visually Impaired) | Creator of SECURE INDIA
-"I am a PWD, but my vision for India is 100% clear."
-
-### License
-
-MIT License - Open for everyone to use and improve for India.
-
-Jai Hind! 🇮🇳
+Made with ❤️ by Ayush Sharma - kanpur,Uttar Pradesh 
+Jai Hind!
