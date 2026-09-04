@@ -96,3 +96,13 @@ MIT builds perfect roads with money. I want to learn at MIT D-Lab how to build s
 ---
 Built in Kanpur, Tested in Kanpur, For Kanpur.
 Live: secure-india.vercel.app | Email: ayushsharma72753@gmail.com
+---
+### MY TARGET 🎯
+**Short Term:** B.Tech CSE from MIT USA (BS in EECS) - Focus on Edge AI & Computer Vision
+
+**Long Term:** Build Secure India as India's first offline pothole brain - every bike in Kanpur, UP should get 50m alert without internet, like Tesla but for Rs 0.
+
+**Why MIT is my target:** 
+MIT D-Lab builds tech for poor, not just rich. I am from Kanpur where roads kill more than accidents. I want to learn at MIT how to make my $0 phone app as accurate as MIT's $10k LiDAR car. Then come back and give it free to Kanpur Nagar Nigam.
+
+**Goal for 2028:** Get into MIT EECS, deploy Secure India in all UP districts.
