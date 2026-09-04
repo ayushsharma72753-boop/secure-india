@@ -88,7 +88,6 @@ function startGPS(){
     myLat=pos.coords.latitude; myLon=pos.coords.longitude;
     document.getElementById("location").value=myLat+","+myLon;
     map.setView([myLat,myLon],16);
-    // 50m ALERT CHECK
     let near = allReports.filter(r=>{if(!r.latitude||!r.latitude.includes(",")) return false; let [la,lo]=r.latitude.split(",").map(Number); if(isNaN(la)) return false; return getDistance(myLat,myLon,la,lo) <= 50;});
     if(near.length>0){document.getElementById("alert50m").style.display="block"; document.getElementById("alert50m").innerText=`⚠️ ALERT! ${near.length} POTHOLE(S) WITHIN 50 METER - SLOW DOWN!`; if(navigator.vibrate) navigator.vibrate([500,200,500]);} else {document.getElementById("alert50m").style.display="none";}
     try{let r=await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${myLat}&lon=${myLon}`); let d=await r.json(); let city=d.address.city||d.address.town||""; let state=d.address.state||"default"; detectedState=state; document.getElementById("city").value=city+", "+state; document.getElementById("gpsCity").innerText=`Detected: ${city}, ${state} - Will go to this state dept`;}catch(e){}
